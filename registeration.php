@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Login to Recools - Easiest way to speed your app development.">
   <meta name="author" content="Recools">
-  <title>Recools - API Mocking Service - Authorization</title>
+  <title>Recools - Research and development - Authorization</title>
   
   <link href="assets/img/logo-icon.png" rel="icon" type="image/png">
   
@@ -16,28 +16,28 @@
   
   <link type="text/css" href="assets/css/argon.mine209.css?v=1.0.0" rel="stylesheet">
 	<link href="assets/css/noty.css" rel="stylesheet">
-  <script type="text/javascript">
-	var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-	(function(){
-	var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-	s1.async=true;
-  
-  s1.src='assets/js/tawk.to.min.js';
-	s1.charset='UTF-8';
-	s1.setAttribute('crossorigin','*');
-	s0.parentNode.insertBefore(s1,s0);
-	})();
-	</script>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-145091581-1"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-
-		gtag('config', 'UA-145091581-1');
-	</script>
 	<script src="assets/js/utils.js"></script>
 </head>
+<?php
+require('db.php');
+if (isset($_REQUEST['username'])){
+	$username = stripslashes($_REQUEST['username']);
+	$username = mysqli_real_escape_string($con,$username); 
+	$email = stripslashes($_REQUEST['email']);
+	$email = mysqli_real_escape_string($con,$email);
+	$password = stripslashes($_REQUEST['password']);
+	$password = mysqli_real_escape_string($con,$password);
+	$trn_date = date("Y-m-d H:i:s");
+        $query = "INSERT into `users` (username, password, email, trn_date)
+VALUES ('$username', '".md5($password)."', '$email', '$trn_date')";
+        $result = mysqli_query($con,$query);
+        if($result){
+            echo "
+<h3>You are registered successfully.</h3>
+Click here to<a href='login.php'>Login</a>";
+        }
+    }else{
+?>
 
 <body class="bg-default">
   <div class="main-content">
@@ -71,19 +71,19 @@
           
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="index.html">
+              <a class="nav-link nav-link-icon" href="index.php">
                 <i class="ni ni-planet"></i>
                 <span class="nav-link-inner--text">Home</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="register.html">
+              <a class="nav-link nav-link-icon" href="registeration.php">
                 <i class="ni ni-circle-08"></i>
                 <span class="nav-link-inner--text">Register</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link nav-link-icon" href="login.html">
+              <a class="nav-link nav-link-icon" href="login.php">
                 <i class="ni ni-key-25"></i>
                 <span class="nav-link-inner--text">Login</span>
               </a>
@@ -94,41 +94,6 @@
     </nav>
     
 
-<script>
-    let invoked = false;
-    setTimeout(() => invoked = true, 1200);
-
-    function onSignIn(googleUser) {
-        if (!invoked) {
-            invoked = true;
-            return;
-        }
-        const idToken = googleUser.getAuthResponse().id_token;
-        const profile = googleUser.getBasicProfile();
-        const name = profile.getName();
-        const companyName = `${name}'s Company`;
-        const email = profile.getEmail();
-        const body = {
-            "Name": name,
-            "CompanyName": companyName,
-            "Email": email,
-            "IDToken": idToken,
-            "Plan": "trial",
-        };
-
-        fetch("/authenticate/google", {
-            method: "POST",
-            headers: {
-                "content-type": "application/json"
-            },
-            body: JSON.stringify(body)
-        })
-        .then(parseResponse)
-        .then(r => {
-            window.location.href = "/admin/";
-        }).catch(handleError);
-    }
-</script>
 <div class="header bg-gradient-primary py-7 py-lg-8">
     <div class="container">
         <div class="header-body text-center mb-7">
@@ -157,9 +122,9 @@
                 <div class="card-header bg-transparent pb-5">
                     <div class="text-muted text-center mt-2 mb-3"><small>Register with</small></div>
                     <div class="btn-wrapper text-center">
-                        <a href="https://github.com/login/oauth/authorize?access_type=online&amp;client_id=bff0f4af11c9e5ccf0b4&amp;response_type=code&amp;scope=user%3Aemail+user%3Aemail&amp;state=asdhjioqwikohdjioh" class="btn btn-neutral btn-icon">
+                        <a href="" class="btn btn-neutral btn-icon">
                             <span class="btn-inner--icon"><img src="assets/img/icons/common/github.svg"></span>
-                            <span class="btn-inner--text">Github</span>
+                            <span class="btn-inner--text">Google</span>
                         </a>
                         <a href="#" class="btn btn-neutral btn-icon" style="padding: 4px;">
                             <div class="g-signin2" data-onsuccess="onSignIn"></div>
@@ -170,23 +135,16 @@
                     <div class="text-center text-muted mb-4">
                         <small>Or register with credentials</small>
                     </div>
-                    <form id="register-form" role="form" action="https://Recools.com/register" method="POST">
+                    <form id="register-form" role="form" action="" method="POST" name="login">
                         <div class="form-group mb-3">
                             <div class="input-group input-group-alternative">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
                                 </div>
-                                <input class="form-control" name="Name" placeholder="Name" type="text" required>
+                                <input class="form-control" name="username" placeholder="username" type="text" required>
                             </div>
                         </div>
-                        <div class="form-group mb-3">
-                            <div class="input-group input-group-alternative">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="ni ni-shop"></i></span>
-                                </div>
-                                <input class="form-control" name="CompanyName" placeholder="Company name" type="text">
-                            </div>
-                        </div>
+                       
                         <div class="form-group mb-3">
                             <div class="input-group input-group-alternative">
                                 <div class="input-group-prepend">
@@ -200,7 +158,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                                 </div>
-                                <input id="Password" class="form-control" name="Password" placeholder="Password" type="password" required>
+                                <input id="Password" class="form-control" name="password" placeholder="Password" type="password" required>
                             </div>
                         </div>
                         <div class="form-group">
@@ -213,7 +171,7 @@
                         </div>
                         <input type="hidden" name="x-csrf-token" value="">
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary my-4">Register</button>
+                            <button type="submit" value="Register" name="submit" class="btn btn-primary my-4">Register</button>
                         </div>
                     </form>
                 </div>
@@ -224,33 +182,7 @@
         </div>
     </div>
 </div>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<meta name="google-signin-client_id" content="771935739209-66ssugdg7tpkrqj4jra8akkenecji7c9.apps.googleusercontent.com">
-<script>
-    document.getElementById("register-form").addEventListener("submit", function (e) {
-        const p = this.querySelector("#Password").value;
-        const pr = this.querySelector("#PasswordRepeat").value;
 
-        if (p.length < 7) {
-            e.preventDefault();
-
-            return new Noty({
-                type: "error",
-                layout: "topCenter", 
-                text: "Your password is too short, it must be at least 7 characters long.",
-            }).show()
-        }
-        if (p !== pr) {
-            e.preventDefault();
-
-            return new Noty({
-                type: "error",
-                layout: "topCenter", 
-                text: "Your passwords do not match.",
-            }).show()
-        }
-    })
-</script>
 
   </div>
   
@@ -268,7 +200,7 @@
               <a href="index.html" class="nav-link">Recools</a>
             </li>
             <li class="nav-item">
-              <a href="https://app.tettra.co/teams/Recools/pages/welcome" class="nav-link">Documentation</a>
+             <!-- <a href="https://app.tettra.co/teams/Recools/pages/welcome" class="nav-link">Documentation</a>-->
             </li>
           </ul>
         </div>
@@ -286,6 +218,7 @@
     
 		
   </script>
+  <?php } ?>
 </body>
 
 </html>
